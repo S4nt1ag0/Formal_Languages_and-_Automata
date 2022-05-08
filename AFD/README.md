@@ -14,7 +14,8 @@
   - [Matrix](#matrix)
   - [Feeding matrix](#feeding_matrix)
   - [Final definitions](#final_definitions)
-  - [Word analysis](word_analysis)
+  - [Word analysis](#word_analysis)
+  - [Final Considerations](#final_considerations)
 ***
 ## <a id="Getting_Started" />Getting Started
 ### <a id="requisites" />Requisites
@@ -96,12 +97,9 @@ So in line 0 (state 0) column 0 (a) the future state is 1. But in line 0 (state 
 This part defines the initial and final states. Which will be used in the word analysis part
 
 ``` sh
-initialState = input('digite o estado inicial');
-finalState = input('digite o estado final');
-
-if (initialState or finalState) not in states: raise Exception("estado invalido");
+initialState = input();
+finalState = input().split(" ");
 ```
-and check if these states are present in user defined states
 ***
 ## <a id="word_analysis" />Word Analysis
 
@@ -116,7 +114,7 @@ for word in words:
     for y in word:
         if(atualState != stateOfError):
             atualState = matriz[states.index(atualState)][alfabeth.index(y)];  # pegando o estado futuro na matriz de estado/ações
-    if (atualState == finalState):
+    if (atualState in finalState):
         print('S')
     else:
         print('N')
@@ -125,6 +123,11 @@ If the current state is different from the error state, the current state will b
 in the line with index equal to the currentstate index in the state array
 and column with index equal to the index of the current letter of the analyzed word in the alphabet array
 
-at the end if the current state is equal to the final state the AFD produces output 'S' if not output 'N'
+At the end, if the current state is present in the final states, AFD produces output 'S' if not output 'N'
 
 As the operations on the matrix occur directly through the indexes, they are computationally cheaper. The computationally most expensive part would be getting the index of the elements in the alphabet and states arrays, which would have o(n) order
+
+
+## <a id="final_considerations" />Final Considerations
+
+Some modifications needed to be made since the run codes (program that evaluates the code with inputs and outputs) confused the input message with an output produced from the system, so these explanatory messages were removed from the input. In addition, the possibility of the existence of more than one final state was noted, so the final state became a array and at the end, instead of comparing the current state with the final state, it only checks if the current state is present in the final state. final states array
