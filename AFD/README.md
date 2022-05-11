@@ -11,11 +11,10 @@
   - [Running the application](#Running_the_application) 
 - [About The Project](#aboutProject)
   - [States and Alfabeth](#States_and_Alfabeth)
-  - [Matrix](#matrix)
-  - [Feeding matrix](#feeding_matrix)
+  - [Dictionary](#dictionary)
+  - [Feeding dictionary](#feeding_dictionary)
   - [Final definitions](#final_definitions)
   - [Word analysis](#word_analysis)
-  - [Final Considerations](#final_considerations)
 ***
 ## <a id="Getting_Started" />Getting Started
 ### <a id="requisites" />Requisites
@@ -43,59 +42,50 @@ stateOfError = randint(0, len(states) * 100)
 while (stateOfError in states): stateOfError = randint(0, len(states) * 100)
 ```
 
-*note: states were defined as integers to facilitate future operations and to generate the default error state.
-## <a id="matrix" />Matrix
-Thinking about the representation of an AFD, it was decided to create a state/action table. Where for each state there are actions available (letters of the alphabet in this case) and these actions indicate future states if that action is chosen for that state.
+## <a id="dictionary" />Dictionary
+Thinking about the representation of an AFD, it was decided to create a state/action dictionary. Where for each state there are actions available (letters of the alphabet in this case) and these actions indicate future states if that action is chosen for that state.
 
-As the user may not complete all transitions, that is, inform where each state goes depending on which action and current state. We will assume that every uninformed transition will result in an error state. So first we create the whole matrix with error states
+As the user may not complete all transitions, that is, inform where each state goes depending on which action and current state. We will assume that every uninformed transition will result in an error state. So first we create the entire dictionary with all actions from all states leading to the error state.
 
 ``` sh
-def gerar_matriz(n_linhas, n_colunas):
-    return [[stateOfError] * n_colunas for _ in range(n_linhas)]
+dicionarioDeEstadosFuturos = {};
 
-matriz = gerar_matriz(len(states), len(alfabeth))  # criando a matriz estado/ações
+for i in states:
+    dicionarioDeEstadosFuturos[i] = {}
+    for j in alfabeth:
+        dicionarioDeEstadosFuturos[i][j] = stateOfError;
 ```
 
 
+
 Something like that:
+![img.png](assets/dictionary1.png)
 
-![img.png](assets/matrix1.png)
-
-notice that the matrix became 2x2 due to having 2 states and 2 actions. and that any transition in it leads to an error state
+where '99' was the random error state chosen by the system
 
 ***
-## <a id="Feeding_matrix" />Feeding Matrix
-Now, with a matrix with all values being the error state, we can fill it with the instructions that the user types and this way we will have an AFD that behaves exactly as the user instructions define and with an error state for all others. that not;
+## <a id="Feeding_dictionary" />Feeding Dictionary
+Now, with a dictionary with all values being the error state, we can fill it with the instructions that the user types and this way we will have an AFD that behaves exactly as the user instructions define and with an error state for all others that not;
 ``` sh
 trasaction = int(input('digite o numero de transações'))  # pegando o numero de transações
 
 for i in range(trasaction):
-    tripla = input('digite a tripla').split(' ');  # pegando a tripla
+    tripla = input().split(" ");  # pegando a tripla
     stateFrom = tripla[0];
     letra = tripla[1];
     stateTo = tripla[2];
-    if (stateFrom or stateTo) not in states: raise Exception("estado invalido")
-    if letra not in alfabeth: raise Exception("letra invalida");
-
-    matriz[states.index(stateFrom)][alfabeth.index(letra)] = stateTo;  # populando a matriz com os estados
+    dicionarioDeEstadosFuturos[stateFrom][letra] = stateTo;  # populando o dicionario com os estados futuros corretos
 
 ```
-After extracting the information from the tuple of the current state, letter and future state, we check if the states belong to those defined at the beginning of the program and if the letter belongs to the alphabet
-
-Here's a little note, our letters are not numbers, so we can't use them as indexes in the matrix, so instead we'll look for the index of the alphabet vector that contains that symbol and we'll use that index as the index in the matrix, the same for the states because it is possible for the user to define only two states as 7 and 8 when trying to access position 7 of the matrix would cause an error.
-
-Then we will work with the indices of the elements in the vectors of states and alphabets
 
 At the end you should have something like this:
-
-![img.png](assets/matrix2.png)
+![img.png](assets/dictionary2.png)
 
 So in line 0 (state 0) column 0 (a) the future state is 1. But in line 0 (state 0) column 1 (b) which has not been defined by the user indicates that the AFD will go to an error state
 ***
 ## <a id="final_definitions" />Final Definitions
 
-This part defines the initial and final states. Which will be used in the word analysis part
-
+This part defines the initial and final states or final states (may have more than one). Which will be used in the word analysis part
 ``` sh
 initialState = input();
 finalState = input().split(" ");
@@ -103,31 +93,23 @@ finalState = input().split(" ");
 ***
 ## <a id="word_analysis" />Word Analysis
 
-A primeira parte na analise se uma palavra é aceita pelo AFD é a obtenção delas e a analise individual. Para isso o estadoAtual passa a ser o estado inicial. Então será feito uma analise para letra da palavra. 
-
+The first part in analyzing whether a word is accepted by the AFD is obtaining them and analyzing them individually. For this, the CurrentState becomes the initial state. Then an analysis will be made for each letter of the word.
 
 ``` sh
-words = input('digite as palavras do sistema').split(' ')
+words = input().split(" ")
 
 for word in words:
     atualState = initialState;
     for y in word:
         if(atualState != stateOfError):
-            atualState = matriz[states.index(atualState)][alfabeth.index(y)];  # pegando o estado futuro na matriz de estado/ações
+            atualState = dicionarioDeEstadosFuturos[atualState][y];  # pegando o estado futuro no dicionario de estado/ações
     if (atualState in finalState):
         print('S')
     else:
         print('N')
 ```
-If the current state is different from the error state, the current state will be equal to the matrix value
-in the line with index equal to the currentstate index in the state array
-and column with index equal to the index of the current letter of the analyzed word in the alphabet array
+If the current state is different from the error state, the current state will be equal to the dictionary value in propery 'atualState' and propery 'letter'
 
 At the end, if the current state is present in the final states, AFD produces output 'S' if not output 'N'
 
-As the operations on the matrix occur directly through the indexes, they are computationally cheaper. The computationally most expensive part would be getting the index of the elements in the alphabet and states arrays, which would have o(n) order
-
-
-## <a id="final_considerations" />Final Considerations
-
-Some modifications needed to be made since the run codes (program that evaluates the code with inputs and outputs) confused the input message with an output produced from the system, so these explanatory messages were removed from the input and error handling with exceptions. In addition, the possibility of the existence of more than one final state was noted, so the final state became a array and at the end, instead of comparing the current state with the final state, it only checks if the current state is present in the final state. final states array
+As the operations on the dictionary occur directly through the keys, they are computationally cheaper which would have o(n) order
