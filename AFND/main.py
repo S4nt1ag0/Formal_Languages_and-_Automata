@@ -34,15 +34,20 @@ for word in words:
         while stack_of_atualStates:
             atualState = stack_of_atualStates.pop()
             futureStates = dicionarioDeEstadosFuturos.get((atualState,y))
+            if(y=="*"):
+                if(futureStates):
+                    futureStates.append(atualState)
+                else:
+                    futureStates = [atualState]
             if(futureStates):
                 for futureState in futureStates:
                     stack_of_futureStates.append(futureState)
         while stack_of_futureStates:
             stack_of_atualStates.append(stack_of_futureStates.pop())
-        flag = 0
-        for finalState in finalStates:
-            if(finalState in stack_of_atualStates):
-                flag = 1
+    flag = 0
+    for finalState in finalStates:
+        if(finalState in stack_of_atualStates):
+            flag = 1
     if (flag):
         print('S')
     else:
