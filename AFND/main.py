@@ -1,10 +1,5 @@
-from random import randint
-from typing import List
-
 states = input().split(" ");  # pegando os estados
 alfabeth = input().split(" ")  # pegando o alfabeto
-
-stateOfError = randint(0, len(states) * 100)
 
 dicionarioDeEstadosFuturos = dict();
 
@@ -19,14 +14,14 @@ for i in range(trasaction):
     dicionarioDeEstadosFuturos[stateFrom, letra] = dicionarioDeEstadosFuturos.get((stateFrom, letra)) or []
     dicionarioDeEstadosFuturos[stateFrom, letra].append(stateTo);  # populando o dicionario com os estados futuros corretos
 
-stack_of_atualStates: List[str] = []
+stack_of_atualStates = []
 
 initialStates = input().split(" ");
 finalStates = input().split(" ");
 
 words = input().split(" ")
 
-stack_of_futureStates: List[str] = []
+stack_of_futureStates = []
 for word in words:
     for initialState in initialStates:
         stack_of_atualStates.append(initialState)
