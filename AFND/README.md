@@ -100,3 +100,7 @@ for word in words:
     else:
         print('N')
 ```
+
+structures used:
+
+dictionaries, lists and arrays
