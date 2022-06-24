@@ -1,4 +1,4 @@
-estados = input().split(" ") # pegando os estados
+estados = input().split(" ")  # pegando os estados
 alfabeto = input().split(" ")  # pegando o alfabeto
 pilhaAlfabeto = input().split(" ")  # pegando o alfabeto da pilha
 transacoes = int(input())  # pegando o numero de transações
@@ -9,7 +9,7 @@ for estado in estados:
     dicionarioDeEstadosFuturos[estado] = {}  # criando um dicionario para cada estado
 
 for i in range(0, transacoes):
-    quintupla = input().split(" ") # pegando a tripla
+    quintupla = input().split(" ")  # pegando a tripla
     estadoFrom = quintupla[0]
     letra = quintupla[1]
     desempilha = quintupla[2]
@@ -47,9 +47,10 @@ for palavra in palavras:
                             continue
 
                 if empilha != '*':
-                    pilhaTemporaria.append(empilha)
+                    for element in empilha:
+                        pilhaTemporaria.append(element)
 
-                pilhaEstadosAtuais.append([estadoTo, pilhaTemporaria,palavraTemp])
+                pilhaEstadosAtuais.append([estadoTo, pilhaTemporaria, palavraTemp])
 
         if len(palavraTemp) == 0:
             if estado in estadosFinais and len(pilha) == 0:
@@ -74,7 +75,8 @@ for palavra in palavras:
                             continue
 
                 if empilha != '*':
-                    pilhaTemporaria.append(empilha)
+                    for element in empilha:
+                        pilhaTemporaria.append(element)
 
                 pilhaEstadosAtuais.append([estadoTo, pilhaTemporaria, palavraTemp2])
 
