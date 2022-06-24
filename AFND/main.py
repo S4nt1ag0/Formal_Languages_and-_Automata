@@ -1,79 +1,84 @@
-estados = input().split(" ");  # pegando os estados
+estados = input().split(" ") # pegando os estados
 alfabeto = input().split(" ")  # pegando o alfabeto
 pilhaAlfabeto = input().split(" ")  # pegando o alfabeto da pilha
 transacoes = int(input())  # pegando o numero de transações
 
-dicionarioDeEstadosFuturos = {};
+dicionarioDeEstadosFuturos = {}
 
 for estado in estados:
-    dicionarioDeEstadosFuturos[estado] = {} #criando um dicionario para cada estado
+    dicionarioDeEstadosFuturos[estado] = {}  # criando um dicionario para cada estado
 
 for i in range(0, transacoes):
-    quintupla = input().split(" ");  # pegando a tripla
-    estadoFrom = quintupla[0];
-    letra = quintupla[1];
-    desempilha = quintupla[2];
-    estadoTo = quintupla[3];
-    empilha = quintupla[4];
+    quintupla = input().split(" ") # pegando a tripla
+    estadoFrom = quintupla[0]
+    letra = quintupla[1]
+    desempilha = quintupla[2]
+    estadoTo = quintupla[3]
+    empilha = quintupla[4]
 
-    if letra not in dicionarioDeEstadosFuturos[estadoFrom]: #adiciona um estado a lista de estados futuros
+    if letra not in dicionarioDeEstadosFuturos[estadoFrom]:  # adiciona um estado a lista de estados futuros
         dicionarioDeEstadosFuturos[estadoFrom][letra] = []
 
     dicionarioDeEstadosFuturos[estadoFrom][letra].append([desempilha, estadoTo, empilha])
 
-
 estadoInicial = input()
-estadosFinais = input().split(" ");
+estadosFinais = input().split(" ")
 
 palavras = input().split(" ")
 
 for palavra in palavras:
     pilha = []
-    pilhaEstadosAtuais = [(estadoInicial,pilha)]
+    pilhaEstadosAtuais = [(estadoInicial, pilha, palavra)]
     flag = 0
-    for letra in palavra:
-        while flag == 0 and len(pilhaEstadosAtuais)>0:
-            estado,pilhaTemp = pilhaEstadosAtuais.pop()
 
-            if dicionarioDeEstadosFuturos[estado].get('*') and letra != '*':
-                triplas = dicionarioDeEstadosFuturos[estado].get('*')
-                for desempilha, estadoTo, empilha in triplas:
-                    pilhaTemporaria = pilhaTemp.copy()
+    while flag == 0 and len(palavra) > 0 and len(pilhaEstadosAtuais) > 0:
+        estado, pilhaTemp, palavraTemp = pilhaEstadosAtuais.pop()
 
-                    if (desempilha != '*'):
-                        if (len(pilhaTemporaria) == 0):
-                            break
-                        else:
-                            topo = pilhaTemporaria.pop()
-                            if (desempilha != topo):
-                                break
+        if dicionarioDeEstadosFuturos[estado].get('*') and palavraTemp != '*':
+            triplas = dicionarioDeEstadosFuturos[estado].get('*')
+            for desempilha, estadoTo, empilha in triplas:
+                pilhaTemporaria = pilhaTemp.copy()
 
-                    if (empilha != '*'):
-                        pilhaTemporaria.append(empilha)
+                if desempilha != '*':
+                    if len(pilhaTemporaria) == 0:
+                        break
+                    else:
+                        topo = pilhaTemporaria.pop()
+                        if desempilha != topo:
+                            continue
 
-                    pilhaEstadosAtuais.append([estadoTo,pilhaTemporaria])
+                if empilha != '*':
+                    pilhaTemporaria.append(empilha)
 
-            if dicionarioDeEstadosFuturos[estado].get(letra):
-                triplas = dicionarioDeEstadosFuturos[estado].get(letra)
-                for desempilha,estadoTo,empilha in triplas:
-                    pilhaTemporaria = pilha.copy()
+                pilhaEstadosAtuais.append([estadoTo, pilhaTemporaria,palavraTemp])
 
-                    if(desempilha != '*'):
-                        if(len(pilhaTemporaria)==0):
-                            break
-                        else:
-                            topo = pilhaTemporaria.pop()
-                            if(desempilha != topo):
-                                break
+        if len(palavraTemp) == 0:
+            if estado in estadosFinais and len(pilhaTemp) == 0:
+                flag = 1
+                break
+            else:
+                continue
 
-                    if(empilha != '*'):
-                        pilhaTemporaria.append(empilha)
+        palavraTemp2 = palavraTemp[1:0]
 
-                    pilhaEstadosAtuais.append([estadoTo, pilhaTemporaria])
+        if dicionarioDeEstadosFuturos[estado].get(palavraTemp[0]):
+            triplas = dicionarioDeEstadosFuturos[estado].get(palavraTemp[0])
+            for desempilha, estadoTo, empilha in triplas:
+                pilhaTemporaria = pilha.copy()
 
-            for state in pilhaEstadosAtuais:
-                if state in estadosFinais and len(pilha) == 0:
-                    flag = 1
+                if desempilha != '*':
+                    if len(pilhaTemporaria) == 0:
+                        break
+                    else:
+                        topo = pilhaTemporaria.pop()
+                        if desempilha != topo:
+                            continue
+
+                if empilha != '*':
+                    pilhaTemporaria.append(empilha)
+
+                pilhaEstadosAtuais.append([estadoTo, pilhaTemporaria, palavraTemp2])
+
     if flag:
         print('S')
     else:
